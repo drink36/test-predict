@@ -19,7 +19,6 @@ class CNN(nn.Module):
         self.conv3= nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
         self.fc1 = nn.Linear(64 * 16 * 16, 120)
         self.fc2 = nn.Linear(120, 60)
-        # 假設關聯性可以被定義為一個連續值，使用1個輸出單元
         self.fc3 = nn.Linear(60, 1)
 
     def forward(self, x):
@@ -35,7 +34,6 @@ class CNN(nn.Module):
 data = pd.read_csv('responses.csv')
 image_data = []
 images=os.listdir('images')
-# drop the rows without in the images
 data = data[data['id'].isin([item.split('.')[0] for item in images])]
 data['corr'] = data['corr'].astype(float)
 output_data = torch.Tensor(data['corr'].values).unsqueeze(1).cuda()
@@ -61,11 +59,8 @@ print(len(train_output), len(test_output))
 # define the model
 model=CNN()
 model.cuda()
-# define the loss function
 criterion = nn.MSELoss()
-# define the optimizer
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-# training the model with batch size 10
 for epoch in range(5):
     for batch, data in enumerate(zip(train_data)):
         model.train()
